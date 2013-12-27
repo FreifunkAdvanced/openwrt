@@ -29,9 +29,15 @@ define kernel_entry
 -a 0x88000000 -e 0x88000000
 endef
 else
+ifeq ($(CONFIG_SOC_MT7621),y)
+define kernel_entry
+-a 0x80001000 -e 0x80001000
+endef
+else
 define kernel_entry
 -a 0x80000000 -e 0x80000000
 endef
+endif
 endif
 
 define MkCombineduImage
@@ -640,10 +646,25 @@ endif
 #
 
 Image/Build/Profile/WMR300=$(call BuildFirmware/Default8M/$(1),$(1),wmr-300,WMR300)
+Image/Build/Profile/RT-N14U=$(call BuildFirmware/Default8M/$(1),$(1),rt-n14u,RT-N14U)
 
 ifeq ($(SUBTARGET),mt7620n)
 define Image/Build/Profile/Default
 	$(call Image/Build/Profile/WMR300,$(1))
+	$(call Image/Build/Profile/RT-N14U,$(1))
+endef
+endif
+
+
+#
+# MT7621 Profiles
+#
+
+Image/Build/Profile/MT7621=$(call BuildFirmware/Default4M/$(1),$(1),mt7621,MT7621)
+
+ifeq ($(SUBTARGET),mt7621)
+define Image/Build/Profile/Default
+	$(call Image/Build/Profile/MT7621,$(1))
 endef
 endif
 
